@@ -4,7 +4,8 @@ const bodyParser = require('body-parser')
 const layout = require('./views/layout')
 const path = require("path");
 const {db} = require('./models/');
-
+const wikiRouter = require('./routes/wiki');
+const userRouter = require('./routes/user');
 const app = express();
 const PORT = 3000;
 
@@ -13,28 +14,22 @@ app.use(express.static(path.join(__dirname, 'stylesheets')));
 app.use(bodyParser.urlencoded({ extended: false}))
 
 app.get('/', (req,res) => {
-    res.send(layout(''))
+    res.redirect('/wiki')
 })
-
-    app.listen(PORT, () => {
-        console.log("Listening to port 3000")
-        console.log(db);
-    })
-
+app.use('/wiki', wikiRouter);
 
 db.authenticate().then(() => {
   console.log("Connected to the database");
-  console.log(db);
 });
 
-// const start = async () => {
-//     await db.sync();
+const start = async () => {
+    await db.sync();
 
-//     app.listen(PORT, () => {
-//         console.log("Listening to port 3000")
-//     })
-// }
+    app.listen(PORT, () => {
+        console.log("Listening to port 3000")
+    })
+}
 
-// start();
+start();
 
 
